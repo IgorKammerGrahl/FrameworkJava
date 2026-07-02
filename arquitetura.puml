@@ -1,0 +1,78 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+package "core" {
+    class ContractEngine {
+        + setup(): ContractEngine
+        + addValidator(annotation: Class, validator: ContractValidator): ContractEngine
+        + protect(interfaceType: Class, implementation: Object): Object
+    }
+
+    class ValidatorRegistry {
+        - validators: Map<Class, ContractValidator>
+        + register(annotationType: Class, validator: ContractValidator): void
+        + getValidator(annotationType: Class): ContractValidator
+    }
+
+    class ContractInvocationHandler {
+        - target: Object
+        + invoke(proxy: Object, method: Method, args: Object[]): Object
+        - validateParameters(method: Method, args: Object[]): void
+        - validateReturn(method: Method, result: Object): void
+        - validateInvariants(): void
+    }
+}
+
+package "validators" {
+    interface ContractValidator<A, T> {
+        + validate(annotation: A, value: T): void
+    }
+
+    class MinValueValidator {
+        + validate(annotation: MinValue, value: Integer): void
+    }
+
+    class NotNullValidator {
+        + validate(annotation: NotNull, value: Object): void
+    }
+}
+
+package "exceptions" {
+    abstract class ContractViolationException {
+        + message: String
+    }
+
+    class PreConditionException {
+    }
+
+    class PostConditionException {
+    }
+
+    class InvariantViolationException {
+    }
+}
+
+' Relacionamentos aplicando os conceitos da aula:
+
+' 1. Composição
+ContractEngine "1" *-- "1" ValidatorRegistry : contém >
+
+' 2. Agregação
+ValidatorRegistry "1" o-- "*" ContractValidator : registra >
+
+' 3. Associação
+ContractInvocationHandler "1" --> "1" ValidatorRegistry : consulta >
+
+' 4. Dependência
+ContractEngine ..> ContractInvocationHandler : instancia >
+
+' 5. Generalização (Herança / Realização)
+ContractViolationException <|-- PreConditionException
+ContractViolationException <|-- PostConditionException
+ContractViolationException <|-- InvariantViolationException
+
+ContractValidator <|.. MinValueValidator
+ContractValidator <|.. NotNullValidator
+
+@enduml

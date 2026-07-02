@@ -1,0 +1,24 @@
+plugins {
+    id 'application'
+}
+
+group = 'br.com.igorkg.exemplo'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'br.com.igorkg:contract-framework:1.0.0'
+}
+
+application {
+    mainClass = 'br.com.igorkg.exemplo.App'
+}
