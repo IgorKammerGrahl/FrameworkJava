@@ -2,7 +2,7 @@
 skinparam classAttributeIconSize 0
 skinparam monochrome true
 
-package "core" {
+package "br.com.igorkg.contract.core" {
     class ContractEngine {
         + setup(): ContractEngine
         + addValidator(annotation: Class, validator: ContractValidator): ContractEngine
@@ -12,6 +12,7 @@ package "core" {
     class ValidatorRegistry {
         - validators: Map<Class, ContractValidator>
         + register(annotationType: Class, validator: ContractValidator): void
+        + isRegistered(annotationType: Class): boolean
         + getValidator(annotationType: Class): ContractValidator
     }
 
@@ -24,7 +25,7 @@ package "core" {
     }
 }
 
-package "validators" {
+package "br.com.igorkg.contract.validators" {
     interface ContractValidator<A, T> {
         + validate(annotation: A, value: T): void
     }
@@ -38,7 +39,7 @@ package "validators" {
     }
 }
 
-package "exceptions" {
+package "br.com.igorkg.contract.exceptions" {
     abstract class ContractViolationException {
         + message: String
     }
